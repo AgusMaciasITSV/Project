@@ -1,0 +1,50 @@
+===Notebooks===
+-<01> NOTEBOOK BANGHO MAX L5                          $72990
+-<02> NOTEBOOK ASUS ZENBOOK 14                        $159990
+-<03> NOTEBOOK ASUS TUF GAMING F17                    $194990
+-===Teclados===
+-<11> TECLADO GENIUS RS2 KB-118 SP BLACK              $949
+-<12> TECLADO HYPERX ALLOY CORE RGB                   $4389
+-<13> TECLADO CORSAIR RAPIDFIRE RGB MECANICO          $19890
+===Mouses===
+-<21> MOUSE INALAMBRICO TRUST YVI NEGRO               $790
+-<22> MOUSE REDRAGON COBRA FPS M711 RGB               $3990
+-<23> MOUSE GAMER HYPERX PULSEFIRE SURGE RGB          $4899
+===Auriculares===
+-<31> AURICULARES GENIUS HS-04SU C/MICROFONO          $1799
+-<32> AURICULAR LOGITECH G332 G LEATHERETTE           $5485
+-<33> AURICULAR HYPERX CLOUD ALPHA S 7.1 BLACK        $13799
+===Otros===
+-<41> MICROFONO LOGITECH BLUE SNOWBALL WHITE          $7999
+-<42> WEBCAM LOOSAFE 1080P 1/2 CMOS USB C/TRIPODE     $4999
+-<43> IMPRESORA LASER NEGRO HP M107A LASERJET         $17999
+if x == 1:
+    orden[0].append("NOTEBOOK BANGHO MAX L5")
+elif x == 2:
+    orden[0].append("NOTEBOOK ASUS ZENBOOK 14")
+elif x == 3:
+    orden[0].append("NOTEBOOK ASUS TUF GAMING F17")
+elif x == 11:
+    orden[0].append("TECLADO GENIUS RS2 KB-118 SP BLACK")
+elif x == 12:
+    orden[0].append("TECLADO HYPERX ALLOY CORE RGB")
+elif x == 13:
+    orden[0].append("TECLADO CORSAIR RAPIDFIRE RGB MECANICO")
+elif x == 21:
+    orden[0].append("MOUSE INALAMBRICO TRUST YVI NEGRO")
+elif x == 22:
+    orden[0].append("MOUSE REDRAGON COBRA FPS M711 RGB")
+elif x == 23:
+    orden[0].append("MOUSE GAMER HYPERX PULSEFIRE SURGE RGB")
+elif x == 31:
+    orden[0].append("AURICULARES GENIUS HS-04SU C/MICROFONO")
+elif x == 32:
+    orden[0].append("AURICULAR LOGITECH G332 G LEATHERETTE")
+elif x == 33:
+    orden[0].append("AURICULAR HYPERX CLOUD ALPHA S 7.1 BLACK")
+elif x == 41:
+    orden[0].append("MICROFONO LOGITECH BLUE SNOWBALL WHITE")
+elif x == 42:
+    orden[0].append("WEBCAM LOOSAFE 1080P 1/2 CMOS USB C/TRIPODE")
+elif x == 43:
+    orden[0].append("IMPRESORA LASER NEGRO HP M107A LASERJET")
