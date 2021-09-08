@@ -1,7 +1,11 @@
 import os
+from textwrap import indent
 from PyInquirer import prompt, Separator
 import keyboard
 from datetime import datetime
+import json
+
+from prompt_toolkit.shortcuts import clear
 def clearsc():
     os.system('cls' if os.name == 'nt' else 'clear')
 #-------------------------------Main Menu-------------------------------#
@@ -14,7 +18,7 @@ def main_menu():
                     "qmark" : "=",
                     "name" : "opcion",
                     "message" : "(Use las flechas del teclado)",
-                    "choices" : ["Cargar pedido", "Ver registro de pedidos", "Salir"]
+                    "choices" : ["Ingresar pedido", "Ver registro de pedidos", "Salir"]
                     }    
                 ]
     awnsers = prompt(questions)
@@ -24,8 +28,8 @@ def main_menu():
     elif awnsers["opcion"] == "Ver registro de pedidos":
         registro_de_pedidos()
     else:
-        cargar_pedido()
-#-------------------------------Confirmation for Exit-------------------------------#
+        ingresar_pedido()
+#-------------------------------Confirmar Salida-------------------------------#
 def confirm_ex():
     clearsc()
     questions = [
@@ -49,8 +53,8 @@ def registro_de_pedidos():
             if keyboard.read_key() == "q":
                 main_menu()
                 break
-#-------------------------------Cargar Pedidos-------------------------------#
-def cargar_pedido():
+#-------------------------------Ingresar Pedidos-------------------------------#
+def ingresar_pedido():
     clearsc()
     while True:
         awnser = None
@@ -232,8 +236,16 @@ def cargar_pedido():
                 ]
     awnsers = prompt(questions)
     clearsc()
-    if awnsers["YorN"] == True:
-        print("Presione <q> para contiunar")
+    if awnsers["YorN"] == True: # Transfromar pedido a diccionario
+        ordenes = []
+        orden_actual = {
+            "productos" : orden[0],
+            "precios" : orden[1],
+            "precio_total" : suma,
+            "fecha_de_entrega" : fecha[0]+"/"+fecha[1]+"/"+fecha[2]
+        }
+       # with open("pedidos.json", "a") as f:
+        print("Pedido almacenado, presione <q> para contiunar")
         while True:
             if keyboard.read_key() == "q":
                 main_menu()
