@@ -1,0 +1,32 @@
+[
+  {
+    "productos": [
+      "NOTEBOOK BANGHO MAX L5",
+      "NOTEBOOK ASUS TUF GAMING F17",
+      "TECLADO HYPERX ALLOY CORE RGB",
+      "TECLADO CORSAIR RAPIDFIRE RGB MECANICO"
+    ],
+    "precios": [
+      72990,
+      194990,
+      4389,
+      19890
+    ],
+    "precio_total": 292259,
+    "fecha_de_entrega": "12/12/2021"
+  },
+  {
+    "productos": [
+      "AURICULARES GENIUS HS-04SU C/MICROFONO",
+      "MICROFONO LOGITECH BLUE SNOWBALL WHITE",
+      "WEBCAM LOOSAFE 1080P 1/2 CMOS USB C/TRIPODE"
+    ],
+    "precios": [
+      1799,
+      7999,
+      4999
+    ],
+    "precio_total": 14797,
+    "fecha_de_entrega": "15/5/2022"
+  }
+]

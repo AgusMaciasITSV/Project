@@ -1,11 +1,8 @@
 import os
-from textwrap import indent
 from PyInquirer import prompt, Separator
 import keyboard
 from datetime import datetime
 import json
-
-from prompt_toolkit.shortcuts import clear
 def clearsc():
     os.system('cls' if os.name == 'nt' else 'clear')
 #-------------------------------Main Menu-------------------------------#
@@ -45,14 +42,6 @@ def confirm_ex():
         os._exit(0)
     else:
         main_menu()
-#-------------------------------Registro de Pedidos-------------------------------#
-def registro_de_pedidos():
-    clearsc()
-    print("Funcion aun no implementada, presione <q> para volver.")
-    while True:
-            if keyboard.read_key() == "q":
-                main_menu()
-                break
 #-------------------------------Ingresar Pedidos-------------------------------#
 def ingresar_pedido():
     clearsc()
@@ -237,14 +226,17 @@ def ingresar_pedido():
     awnsers = prompt(questions)
     clearsc()
     if awnsers["YorN"] == True: # Transfromar pedido a diccionario
-        ordenes = []
         orden_actual = {
             "productos" : orden[0],
             "precios" : orden[1],
             "precio_total" : suma,
             "fecha_de_entrega" : fecha[0]+"/"+fecha[1]+"/"+fecha[2]
         }
-       # with open("pedidos.json", "a") as f:
+        with open("lista_pedidos.json") as f:
+            tdata = json.load(f)
+        tdata.append(orden_actual)
+        with open("lista_pedidos.json", "w") as f:
+            json.dump(tdata,f,indent=2)
         print("Pedido almacenado, presione <q> para contiunar")
         while True:
             if keyboard.read_key() == "q":
@@ -297,3 +289,27 @@ def pedir_fecha():
                 else:
                     break
     return fecha
+#-------------------------------Registro de Pedidos-------------------------------#
+def registro_de_pedidos():
+    clearsc()
+    with open("lista_pedidos.json", "r") as f:
+        ordenes = json.load(f)
+    if ordenes == []:
+        print("No se encuentra ningun registro.")
+    else:
+        print("="*73)
+        for x in range(len(ordenes)):
+            print("-"*32,"Orden",x+1,"-"*(33-len(str(x))))
+            for y in range(len(ordenes[x]["productos"])):
+                p_actual = ordenes[x]["productos"][y]
+                pre_actual = ordenes[x]["precios"][y]
+                print(p_actual," "*((70-len(p_actual))-len(str(pre_actual))-1),"$",pre_actual)
+            print("-"*73)
+            print("Precio Total:"," "*(70-(14+len(str(ordenes[x]["precio_total"])))),"$",ordenes[x]["precio_total"])
+            print("Fecha de Entrega:"," "*(44),ordenes[x]["fecha_de_entrega"])
+        print("="*73)
+    print("Presione <q> para volver.")
+    while True:
+            if keyboard.read_key() == "q":
+                main_menu()
+                break
