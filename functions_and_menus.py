@@ -3,6 +3,7 @@ from PyInquirer import prompt, Separator
 import keyboard
 from datetime import datetime
 import json
+from datetime import date
 def clearsc():
     os.system('cls' if os.name == 'nt' else 'clear')
 #-------------------------------Main Menu-------------------------------#
@@ -205,8 +206,30 @@ def ingresar_pedido():
             orden[0].append("IMPRESORA LASER NEGRO HP M107A LASERJET")
     for x in range(cant_p):
         orden[0].pop(0)
-    fecha = pedir_fecha()
+    localRawDate = int(local_raw_date())
+    while True:
+        clearsc()
+        fecha = pedir_fecha()
+        rawDate = str(fecha[2])
+        if len(fecha[1]) == 1:
+            rawDate = rawDate + "0" + str(fecha[1])
+        else:
+            rawDate = rawDate + str(fecha[1])
+        if len(fecha[0]) == 1:
+            rawDate = rawDate + "0" + str(fecha[0])
+        else:
+            rawDate = rawDate + str(fecha[0])
+        rawDate = int(rawDate)
+        if rawDate < localRawDate:
+            clearsc()
+            print("Asegurese de ingresar una fecha valida, presione <q> para continuar.")
+            while True:
+                if keyboard.read_key() == "q":
+                    break
+        else:
+            break
     clearsc()
+    print(localRawDate,rawDate)
     print("="*85)
     print("Orden Final:")
     print("="*85)
@@ -230,7 +253,9 @@ def ingresar_pedido():
             "productos" : orden[0],
             "precios" : orden[1],
             "precio_total" : suma,
-            "fecha_de_entrega" : fecha[0]+"/"+fecha[1]+"/"+fecha[2]
+            "fecha_de_entrega" : fecha[0]+"/"+fecha[1]+"/"+fecha[2],
+            "estado_entrega" : False,
+            "rawDate" : rawDate
         }
         with open("lista_pedidos.json") as f:
             tdata = json.load(f)
@@ -244,6 +269,15 @@ def ingresar_pedido():
                 break
     else:
         main_menu()
+#-------------------------------Fecha Actual-------------------------------#
+def local_raw_date():
+    lrd = ""
+    today = date.today()
+    aux = today.strftime("%Y/%m/%d")
+    ld = aux.split("/")
+    for x in ld:
+        lrd = lrd+x
+    return lrd
 #-------------------------------Pedir Fecha de Entrega-------------------------------#
 def pedir_fecha():
     year = datetime.now().year
@@ -289,27 +323,110 @@ def pedir_fecha():
                 else:
                     break
     return fecha
+#-------------------------------Cambiar estado de entrega-------------------------------#
+def estado_entrega():
+    clearsc()
+    with open("lista_pedidos.json", "r") as f:
+        ordenes = json.load(f)
+    listaTemp = []
+    NOrden = 0
+    for elemento in ordenes:
+        NOrden = NOrden +1
+        aux = "Orden "+str(NOrden)+" ="+" "*(15-len(str((NOrden))))
+        aux = aux+"Precio Total: "+"$"+str(elemento["precio_total"])+" "*(15-len(str(elemento["precio_total"])))
+        aux = aux+"Fecha de Entrega: "+elemento["fecha_de_entrega"]+" "*(15-len(str(elemento["fecha_de_entrega"])))
+        aux = aux+"Estado de Entrega: "+("Entregado" if elemento["estado_entrega"] == True else "Pendiente")
+        listaTemp.append(aux)
+    questions = [
+        {
+                    "type" : "list",
+                    "qmark" : "=",
+                    "name" : "NPedido",
+                    "message" : "(Use las flechas del teclado y presione Enter para seleccionar)",
+                    "choices" : listaTemp
+                    }    
+    ]
+    print("Se usan las fechas de entrega y precio total como punto de referencia, para obtener mas informacion revise\nel registro de pedidos en el orden por defecto.\n")
+    print("Por favor, seleccione la orden que desea marcar como entregada/pendiente.")
+    awnsers = prompt(questions)
+    index = listaTemp.index(awnsers["NPedido"])
+    return index
 #-------------------------------Registro de Pedidos-------------------------------#
 def registro_de_pedidos():
     clearsc()
     with open("lista_pedidos.json", "r") as f:
         ordenes = json.load(f)
+        ordenes_main = ordenes
     if ordenes == []:
-        print("No se encuentra ningun registro.")
+        print("No se encuentra ningun registro, presione <q> para continuar.")
+        while True:
+            if keyboard.read_key() == "q":
+                break
+        main_menu()
     else:
-        print("="*73)
-        for x in range(len(ordenes)):
-            print("-"*32,"Orden",x+1,"-"*(33-len(str(x))))
-            for y in range(len(ordenes[x]["productos"])):
-                p_actual = ordenes[x]["productos"][y]
-                pre_actual = ordenes[x]["precios"][y]
-                print(p_actual," "*((70-len(p_actual))-len(str(pre_actual))-1),"$",pre_actual)
-            print("-"*73)
-            print("Precio Total:"," "*(70-(14+len(str(ordenes[x]["precio_total"])))),"$",ordenes[x]["precio_total"])
-            print("Fecha de Entrega:"," "*(44),ordenes[x]["fecha_de_entrega"])
-        print("="*73)
-    print("Presione <q> para volver.")
-    while True:
+        while True:
+            clearsc()
+            print("""
+ Presione: 
+    <q> para volver
+    <c> para limpiar los registros completamente
+    <p> para ordenar por precio (mayor a menor)
+    <f> para ordenar por fecha
+    <d> para mostrar el orden por defecto
+    <o> para marcar pedidos como completados  
+            """)
+            print("="*73)
+            for x in range(len(ordenes)):
+                print("="*73)
+                print("-"*32,"Orden",x+1,"-"*(33-len(str(x))))
+                for y in range(len(ordenes[x]["productos"])):
+                    p_actual = ordenes[x]["productos"][y]
+                    pre_actual = ordenes[x]["precios"][y]
+                    print(p_actual," "*((70-len(p_actual))-len(str(pre_actual))-1),"$",pre_actual)
+                print("-"*73)
+                print("Precio Total:"," "*(70-(14+len(str(ordenes[x]["precio_total"])))),"$",ordenes[x]["precio_total"])
+                print("Fecha de Entrega:"," "*(44),ordenes[x]["fecha_de_entrega"])
+                print("Estado de Entrega:",(" "*45+"Entregado")if ordenes[x]["estado_entrega"] == True else (" "*45+"Pendiente"))
+                print("="*73)
+            print("="*73)
             if keyboard.read_key() == "q":
                 main_menu()
                 break
+            elif keyboard.read_key() == "c":
+                questions = [
+                    {
+                    "type" : "confirm",
+                    "name" : "YorN",
+                    "message" : "Esta seguro que desea eliminar los registros permanentemente?",
+                    }    
+                ]
+                awnsers = prompt(questions)
+                if awnsers["YorN"] == True:
+                    clearsc()
+                    os.remove("lista_pedidos.json")
+                    with open("lista_pedidos.json", "w") as f:
+                        x = []
+                        json.dump(x,f,indent=2)
+                    print("Registros eliminados satisfactoriamente, presione <q> para continuar.")
+                    while True:
+                        if keyboard.read_key() == "q":
+                            break
+                    main_menu()
+            elif keyboard.read_key() == "p":
+                clearsc()
+                ordenes.sort(key=lambda item: item.get("precio_total"))
+            elif keyboard.read_key() == "f":
+                clearsc()
+                ordenes.sort(key=lambda item: item.get("rawDate"))
+            elif keyboard.read_key() == "d":
+                clearsc()
+                ordenes = ordenes_main
+            elif keyboard.read_key() == "o":
+                index = estado_entrega()
+                if ordenes_main[index]["estado_entrega"] == True:
+                    ordenes_main[index]["estado_entrega"] = False
+                else:
+                    ordenes_main[index]["estado_entrega"] = True
+                os.remove("lista_pedidos.json")
+                with open("lista_pedidos.json", "w") as f:
+                    json.dump(ordenes_main,f,indent=2)
